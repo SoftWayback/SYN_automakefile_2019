@@ -1,0 +1,296 @@
+#!/bin/bash
+##
+## EPITECH PROJECT, 2019
+## Epitech Automakefile
+## File description:
+## RATCHETT AND GAWK
+##
+
+#####################################
+#      SOFTWAYBACK CORPORATION      #
+#  AUTO-GENERATING MAKEFILE SCRIPT  #
+#       USE AT YOUR OWN RISK        #
+#          --- E G G ---            #
+#####################################
+
+exe=$0
+config=$1
+#The style is here =
+function thats_the_styyyyyle()
+{
+    echo -e "#####################################"
+    echo -e "#     \e[34m SOFTWAYBACK CORPORATION \e[39m     #"
+    echo -e "#  AUTO-GENERATING MAKEFILE SCRIPT  #"
+    echo -e "#     \e[5m  USE AT YOUR OWN RISK \e[0m       #"
+    echo -e "# \e[31m          -- E G G ---      \e[39m      #"
+    echo -e  "#####################################"
+}
+thats_the_styyyyyle
+#Writing command with flags
+function write_on_makeflags()
+{
+    echo -e "${1}\t=\t${2} -I\$(D_INC)\n" >> Makefile
+}
+
+#Writing rules
+function write_into_makefile()
+{
+    echo -e "${1}\t=\t${2}\n" >> Makefile
+}
+
+#Writing write_directories
+function write_directories()
+{
+    echo -e "${1}\t=\t./${2}\n" >> Makefile
+}
+
+#Writing the main function of the Makefile
+function write_exec()
+{
+    echo -e "all\t:\t\$(NAME)" >> Makefile
+    echo -e "\n\$(NAME)\t:\t\$(OBJ)" >> Makefile
+    echo -e "\t\t\$(CC) -o \$(NAME) \$(OBJ) \$(CFLAGS) \$(LDFLAGS)\n" >> Makefile
+}
+
+#Writing the very usefull header
+function epitech_header()
+{
+    echo -e "##" >> Makefile
+    echo -e "## EPITECH PROJECT, 2020" >> Makefile
+    echo -e "## Makefile" >> Makefile
+    echo -e "## File description:" >> Makefile
+    echo -e "## RATCHETT AND GAWK" >> Makefile
+    echo -e "##\n" >> Makefile
+}
+
+#Writing the clean and fclean rules
+function rules_for_clean()
+{
+    echo -e "clean\t:" >> Makefile
+    echo -e "\t\trm -f \$(OBJ)" >> Makefile
+    echo -e "\t\trm -rf *o\n" >> Makefile
+    echo -e "fclean\t:\tclean" >> Makefile
+    echo -e "\t\trm -f \$(NAME)\n" >> Makefile
+    echo -e "re\t:\tfclean all\n" >> Makefile
+}
+
+
+#Writing the archive
+function zipping_archive()
+{
+    echo -e "archive\t:" >> Makefile
+    echo -e "\t\$(ZIP) \$(ZIPFLAGS) \$(NAME)\$(EXTENSION)_\$(VERSION).\$(ZIP) \$(SRC)">> Makefile
+    echo -e "\t @cp \$(NAME)\$(EXTENSION)_\$(VERSION).\$(ZIP) \$(BCK_DIR)" >> Makefile
+    echo -e "\t @rm -rf \$(NAME)\$(EXTENSION)_\$(VERSION).\$(ZIP)" >> Makefile
+    echo -e "\t @echo \$(NAME)\$(EXTENSION)_\$(VERSION).\$(ZIP) file created." >> Makefile
+    echo -e "\t@./chang_version.sh\n" >> Makefile
+}
+
+#Writing the revert
+function zipping_revert()
+{
+    echo -e "revert\t:" >> Makefile
+    echo -e "\t\$(ZIP) \$(UNZIPFLAGS) \$(BCK_DIR)/\$(NAME)\$(EXTENSION)_\$(BACKUP).\$(ZIP)" >> Makefile
+    echo -e "\t@echo \$(BACKUP) > .version" >> Makefile
+    echo -e "\t @echo Project recreated from \$(NAME)\$(EXTENSION)_\$(BACKUP).\$(ZIP)\n" >> Makefile
+}
+
+#Writing the num
+function zipping_num()
+{
+    echo -e "num\t:\n" >> Makefile
+    echo -e "\t@echo \$(VERSION)\n" >> Makefile
+}
+
+#Writing the delete
+function zipping_delete()
+{
+    echo -e "delete\t:" >> Makefile
+    echo -e "\trm -rf \$(BCK_DIR)/\$(NAME)\$(EXTENSION)_\$(BACKUP).\$(ZIP)\n" >> Makefile
+    echo -e "\t @echo \$(NAME)\$(EXTENSION)_\$(BACKUP).\$(ZIP) file deleted." >> Makefile
+    echo -e "\t @echo "0" > .version" >> Makefile
+}
+
+function backup_erase()
+{
+    echo -e "erase\t:" >> Makefile
+    echo -e "\trm -rf \$(BCK_DIR)/*" >> Makefile
+}
+
+function write_vesion()
+{
+    echo -e "VERSION\t=\t\`cat .version\`\n" >> Makefile
+    echo -e "BACKUP\t=\t\`cat .bkup\`\n " >> Makefile
+}
+
+#Writing the delete
+function phony()
+{
+    echo -e ".PHONY\t:\tall clean fclean re archive revert num delete" >> Makefile
+}
+
+function write_change_version()
+{
+    echo -e "0" >> .version
+    echo -e "0" >> .bkup
+    echo -e "#!/usr/bin/env bash" >> chang_version.sh
+    echo -e "count=\`cat .version\`" >> chang_version.sh
+    echo -e "count=\$((count + 1))" >> chang_version.sh
+    echo -e "bkup=\$((count - 1))" >> chang_version.sh
+    echo -e "echo \$bkup > .bkup" >> chang_version.sh
+    echo -e "echo \$count > .version" >> chang_version.sh
+}
+
+#Error handling if invalid argument
+if [ ! -z $2 ]
+then
+	exit 84
+fi
+folder=$1
+if [ ! -f $folder ]
+then
+	exit 84
+fi
+#file parsing
+    IFS=";"
+    count=0
+    while read line
+    do
+        array=($line)
+        if [[ ${array[0]} == "PROJECT_DIR" ]]
+	then
+	    project_directory=${array[1]}
+	elif [[ ${array[0]} == "SOURCES_DIR" ]]
+	then
+	    sources_directory=${array[1]}
+	elif [[ ${array[0]} == "HEADERS_DIR" ]]
+	then
+	    headers_directory=${array[1]}
+	elif [[ ${array[0]} == "LIBS_DIR" ]]
+	then
+	    library_directory=${array[1]}
+	elif [[ ${array[0]} == "EXEC" ]]
+	then
+	    binary_name=${array[1]}
+	elif [[ ${array[0]} == "CC" ]]
+	then
+	    compilation=${array[1]}
+	elif [[ ${array[0]} == "CFLAGS" ]]
+	then
+	    compilation_flags=${array[1]}
+	elif [[ ${array[0]} == "LDFLAGS" ]]
+	then
+	    linking_flags=${array[1]}
+	elif [[ ${array[0]} == "BCK_DIR" ]]
+	then
+	    backup_folder=${array[1]}
+	elif [[ ${array[0]} == "ZIP" ]]
+	then
+	    compression_binary=${array[1]}
+	elif [[ ${array[0]} == "ZIPFLAGS" ]]
+	then
+	    compression_flags=${array[1]}
+	elif [[ ${array[0]} == "UNZIP" ]]
+	then
+	    decompression_binary=${array[1]}
+	elif [[ ${array[0]} == "UNZIPFLAGS" ]]
+	then
+	    decompression_flags=${array[1]}
+    elif [[ ${array[0]} == "EXTENSION" ]]
+    then
+        extension=${array[1]}
+	elif [[ ${array[0]} == *.c ]]
+	then
+	    sources[count]=${array[0]}
+	    ((count++))
+	fi
+    done < $config
+    if [ -z $project_directory ]
+    then
+        exit 84
+    fi
+    if [[ $headers_directory == "" ]]
+    then
+        headers_directory="."
+    fi
+    if [[ $library_directory == "" ]]
+    then
+        library_directory="."
+    fi
+    if [[ $compilation == "" ]]
+    then
+        compilation="gcc"
+    fi
+    if [[ $sources_directory == "." ]]
+    then
+        sources_directory="./"
+    fi
+    if [[ $extension == "" ]]
+    then
+        extension="_backup"
+    fi
+    if [[ $binary_name == "" ]]
+    then
+        binary_name="a.out"
+    fi
+    #Executing functions
+    directory=$(dirname $config)
+    if [ -f $directory/Makefile ]
+     then
+        rm $directory/Makefile
+    fi
+    if [ -f $directory/chang_version.sh ]
+     then
+        rm $directory/chang_version.sh
+    fi
+
+    epitech_header
+    write_into_makefile "D_SRC" "${sources_directory}/"
+    write_directories "D_LIB" $library_directory
+    write_directories "D_INC" $headers_directory
+    write_into_makefile "NAME" $binary_name
+    for ((i=0; $i < $count; i++))
+    do
+        if [ $i == 0 ]
+        then
+            echo -e "SRC\t=\t\$(D_SRC)${sources[$i]}\t\\" >> Makefile
+        else
+            echo -e "\t\t\$(D_SRC)${sources[$i]}\t\\" >> Makefile
+        fi
+    done
+    write_into_makefile "\nCC" $compilation
+    write_into_makefile "OBJ" "\$(SRC:.c=.o)" >> Makefile
+    write_on_makeflags "CFLAGS" $compilation_flags
+    write_into_makefile "LDFLAGS" $linking_flags
+    write_into_makefile "BCK_DIR" $backup_folder
+    write_into_makefile "ZIP" $compression_binary
+    write_into_makefile "ZIPFLAGS" $compression_flags
+    write_into_makefile "UNZIP" $decompression_binary
+    write_into_makefile "UNZIPFLAGS" $decompression_flags
+    write_into_makefile "EXTENSION" $extension
+    write_vesion
+    write_exec
+    rules_for_clean
+    zipping_archive
+    zipping_revert
+    zipping_num
+    zipping_delete
+    backup_erase
+    phony
+    write_change_version
+
+
+#Moving the makefile into the project directory
+chmod 777 chang_version.sh
+mv .version $directory
+mv .bkup $directory
+mv chang_version.sh $directory
+mv Makefile $directory
+
+exit 0;
+#####################################
+#      SOFTWAYBACK CORPORATION      #
+#  AUTO-GENERATING MAKEFILE SCRIPT  #
+#       USE AT YOUR OWN RISK        #
+#          --- E G G ---            #
+#####################################
